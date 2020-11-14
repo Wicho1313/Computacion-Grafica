@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <!-- Carpeta ThreeJS (librería) descargada de su página oficial-->
+        <base href="threeJS/">
+        <script src="three.js-master/build/three.js"></script>
+        <script src="three.js-master/libs/util/dat.gui.js"></script>
+        <script type="text/javascript" src="three.js-master/examples/js/controls/OrbitControls.js"></script>
+        <title>Primera práctica Three Js</title>
+        <!--localhost/grafica/grafica.html-->
+    </head>
+    <body>
+        <script type="text/javascript">
+            /*
+            Crear unas funciones para organizar el codigo
+            figuras: primitivas en 3d (dos esferas y cubo)
+            luces puntuales de diferentes colores
+            animar las luces
+            */
+
+            var camera, scene, axes, cube, sphere1,sphere2,render, plane;
+            var mtSphere1, mtSphere2, mtCube, sphereL1, mtLight1,mtLight2,mtLight3,mtLight4,mtLight5, mtPlane;
+            var meshSphere1, meshSphere1, meshCube, meshLight1,meshLight2,meshLight3,meshLight4,meshLight5, meshPlane;
+            var light1,light2,light3,light4,light5;
+            var controlScene;
+            var shadowMapHelper, light5Helper;
+            var guiObjects;
+            
+            iniciarEscena();
+            animate();
+            gui();
+            
+            function iniciarEscena(){
+                camera =new THREE.PerspectiveCamera(45,window.innerWidth / window.innerHeight,0.1,1000);
+                scene = new THREE.Scene();
+                scene.fog = new THREE.Fog(0x000000, 300, 800);
+                render = new THREE.WebGLRenderer({antialias:true});
+                
+                render.setSize(window.innerWidth,window.innerHeight);
+                //render.setClearColor(0xe1e0e0);
+                render.setClearColor(0x000000);
+                render.shadowMap.enabled = true;
+                render.shadowMap.type = THREE.PCFSoftShadowMap;
+
+                render.gammaInput = true;
+                render.gammaOutput = true;
+
+                axes = new THREE.AxesHelper(50);
+                scene.add(axes);
+
+                camera.position.x = 0;
+                camera.position.y = 50;
+                camera.position.z = 200;
+                camera.lookAt(0,0,0);
+
+                var geometry = new THREE.Geometry();
+
+                geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+                geometry.vertices.push(new THREE.Vector3(10, 0, 0));
+                geometry.vertices.push(new THREE.Vector3(10, 10, 0));
+                geometry.vertices.push(new THREE.Vector3(0, 10, 0));
+                geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+
+                var material = new THREE.LineBasicMaterial({color: 0xF4370F});
+                var mesh = new THREE.Line(geometry,material);
+                
+                scene.add(mesh);
+
+                sphere1 = new THREE.SphereGeometry(10,50,50);
+                mtSphere1 = new THREE.MeshLambertMaterial({color: 0xffffff});
+                meshSphere1 = new THREE.Mesh(sphere1,mtSphere1);
+                meshSphere1.position.set(30,0,0);
+                meshSphere1.castShadow = true;
+                meshSphere1.receiveShadow = true;
+                scene.add(meshSphere1);
+
+                cube = new THREE.CubeGeometry(15,15,15);
+                mtCube = new THREE.MeshPhongMaterial({color: 0xFFFFFF, specular: 0xFFFFFF, shininess: 1024});
+                meshCube = new THREE.Mesh(cube,mtCube);
+                meshCube.position.set(0,0,0);
+                scene.add(meshCube);
+
+                sphere2 = new THREE.SphereGeometry(10,50,50);
+                mtSphere2 = new THREE.MeshPhongMaterial({color: 0xFFFFFF, specular: 0xFFFFFF, shininess: 2048});
+                meshSphere2 = new THREE.Mesh(sphere2,mtSphere2);
+                meshSphere2.position.set(-30,0,0);
+                meshSphere2.castShadow = true;
+                meshSphere2.receiveShadow = true;
+                scene.add(meshSphere2);
+
+                sphereL1 = new THREE.SphereGeometry(0.5,15,15);
+                light1 = new THREE.PointLight(0xFFFFFF,2,50);
+                mtLight1 = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+                meshLight1 = new THREE.Mesh(sphereL1, mtLight1);
+                light1.add(meshLight1);
+                scene.add(light1);
+
+                sphereL2 = new THREE.SphereGeometry(0.5,15,15);
+                light2 = new THREE.PointLight(0x0040ff,2,50);
+                mtLight2 = new THREE.MeshBasicMaterial({color: 0x0040ff});
+                meshLight2 = new THREE.Mesh(sphereL2, mtLight2);
+                light1.add(meshLight2);
+                scene.add(light2);
+
+                sphereL3 = new THREE.SphereGeometry(0.5,15,15);
+                light3 = new THREE.PointLight(0x80ff80,2,50);
+                mtLight3 = new THREE.MeshBasicMaterial({color: 0x80ff80});
+                meshLight3 = new THREE.Mesh(sphereL3, mtLight3);
+                light1.add(meshLight3);
+                scene.add(light3);
+
+                sphereL4 = new THREE.SphereGeometry(0.5,15,15);
+                light4 = new THREE.PointLight(0xffaa00,2,50);
+                mtLight4 = new THREE.MeshBasicMaterial({color: 0xffaa00});
+                meshLight4 = new THREE.Mesh(sphereL4, mtLight4);
+                light4.add(meshLight4);
+                scene.add(light4);
+
+                plane = new THREE.BoxGeometry(500, 175, 2);
+                mtPlane = new THREE.MeshLambertMaterial({color: 0x80ff80});
+                meshPlane = new THREE.Mesh(plane,mtPlane);
+                meshPlane.rotation.x = Math.PI  * -0.6;
+                meshPlane.position.x = 2;
+                meshPlane.position.y = -12;
+                meshPlane.position.z = 0;
+
+                meshPlane.receiveShadow = true;
+
+                scene.add(meshPlane);
+                
+                sphereL5 = new THREE.SphereGeometry(0.5,15,15);
+                mtLight5 = new THREE.MeshBasicMaterial({color: 0xffffff});
+                meshLight5 = new THREE.Mesh(sphereL5, mtLight5);
+                light5 = new THREE.SpotLight(0xffffff,2);
+                light5.add(meshLight5);
+                light5.position.set(-30,40,-8);
+                light5.angle = Math.PI/3;
+
+                light5Helper = new THREE.SpotLightHelper( light5 );
+                
+                light5.distance = 2000;
+                light5.penumbra = 0.05;
+                light5.castShadow = true;
+                light5.shadow.mapSize.width = 1024;
+                light5.shadow.mapSize.height = 1024;
+                light5.shadow.camera.near = 20;
+                light5.shadow.camera.far = 200;
+
+                shadowMapHelper = new THREE.CameraHelper(light5.shadow.camera);
+
+                scene.add(shadowMapHelper, light5, light5Helper);
+                
+                document.body.appendChild(render.domElement);
+                //render.render(scene,camera);
+                window.addEventListener('resize',onWindowResize);
+            
+                controlScene = new THREE.OrbitControls(camera, render.domElement);
+                controlScene.addEventListener('change',render);
+                controlScene.minDistance = 20;
+                controlScene.maxDistance = 500;
+                
+            }
+           
+            function onWindowResize(){
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                render.setSize(window.innerWidth,window.innerHeight);
+            }
+
+            function renderScene(){
+                light5Helper.update();
+                shadowMapHelper.update();
+
+                var time = Date.now()*0.0006;
+
+                light1.position.x = Math.sin(time * 0.7)*30;
+                light1.position.y = Math.cos(time * 0.5)*20;
+                light1.position.z = Math.sin(time * 0.3)*40;
+
+                light2.position.x = Math.cos(time * 0.7)*30;
+                light2.position.y = Math.cos(time * 0.5)*20;
+                light2.position.z = Math.sin(time * 0.3)*40;
+                
+                light3.position.x = Math.sin(time * 0.7)*40;
+                light3.position.y = Math.sin(time * 0.6)*20;
+                light3.position.z = Math.cos(time * 0.4)*40;
+                
+                light4.position.x = Math.sin(time * 0.6)*30;
+                light4.position.y = Math.cos(time * 0.5)*20;
+                light4.position.z = Math.cos(time * 0.4)*20;
+                
+                var dist = Math.sin(time * 0.9)*30;
+                var inc = Math.sin(time * 0.9)*90;
+                
+                meshSphere1.position.y = dist;
+                meshSphere1.position.z = inc; 
+
+                meshSphere2.position.y = dist;
+                meshSphere2.position.z = inc;
+                
+                console.log(inc)
+                if(parseInt(inc) == -89.00){
+                    console.log('entré');
+                    
+                    meshSphere1.position.y -= Math.sin(time * 0.9)*-10;
+                    meshSphere1.position.y -= Math.sin(time * 0.9)*-10;
+                    meshSphere1.position.y -= Math.cos(time * 0.9)*30;
+                    meshSphere1.position.y -= Math.cos(time * 0.9)*30;
+                    meshSphere1.position.z = -89.00;
+
+                    meshSphere1.rotation.x -= 0.005;
+
+                    meshSphere2.position.y -= Math.sin(time * 0.9)*-10;
+                    meshSphere2.position.y -= Math.sin(time * 0.9)*-10;
+                    meshSphere2.position.y -= Math.cos(time * 0.9)*30;
+                    meshSphere2.position.y -= Math.cos(time * 0.9)*30;
+                    meshSphere2.position.z = -89.00;
+
+                    meshSphere2.rotation.x -= 0.005;
+
+                }
+
+                render.render(scene,camera);                
+            }
+            
+
+            function animate () {
+                requestAnimationFrame(animate);
+                renderScene();
+            }
+
+            function gui(){
+                guiObjects = new dat.GUI();
+
+                var guiOptions = {
+                    angle: light5.angle,
+                    intensity: light5.intensity,
+                    color: light5.color.getHex(),
+                    distance: light5.distance,
+                    penumbra: light5.penumbra
+                }
+                guiObjects.add(guiOptions, 'intensity', 0, 1000).onChange(function(v){
+                    light5.intensity = v;
+                    renderScene();
+                });
+                
+                guiObjects.add(guiOptions, 'angle', 0, Math.PI / 2).onChange(function(v){
+                    light5.angle = v;
+                    renderScene();
+                });
+
+                guiObjects.addColor(guiOptions, 'color').onChange(function(v){
+                    light5.color.setHex(v);
+                    renderScene();
+                });
+
+                guiObjects.add(guiOptions, 'distance', 0, 1000).onChange(function(v){
+                    light5.distance = v;
+                    renderScene();
+                });
+
+                guiObjects.add(guiOptions, 'penumbra', 0, 1000).onChange(function(v){
+                    light5.penumbra = v;
+                    renderScene();
+                });
+
+            }
+        </script>
+    </body>
+</html>
