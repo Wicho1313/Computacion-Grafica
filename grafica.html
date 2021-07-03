@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Primera práctica Three Js</title>
+        <!--localhost/grafica/grafica.html-->
+        <script type="text/javascript" src="../grafica/three.js/build/three.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            
+            var camera =new THREE.PerspectiveCamera(45,window.innerWidth / window.innerHeight,0.1,1000);
+            var scene = new THREE.Scene();
+            /*se agrega*/
+            scene.fog = new THREE.Fog(0x000000,300,800);
+            /**/
+            var render = new THREE.WebGLRenderer({antialias:true});
+            render.setSize(window.innerWidth,window.innerHeight);
+            render.setClearColor(0xEEEEEE);
+            /*se agrega*/
+            render.shadowMap.enabled = true;
+            render.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            render.gammaInput = true;
+            render.gammaOutpu = true;
+
+            /**/
+            var axes = new THREE.AxesHelper(500);
+
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 300;
+
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            geometry.vertices.push(new THREE.Vector3(10, 0, 0));
+            geometry.vertices.push(new THREE.Vector3(10, 10, 0));
+            geometry.vertices.push(new THREE.Vector3(0, 10, 0));
+            geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+
+            var triangulo = new THREE.Geometry();
+            triangulo.vertices.push(new THREE.Vector3(x,y,z));
+            triangulo.vertices.push(new THREE.Vector3(x,y,z));
+            triangulo.vertices.push(new THREE.Vector3(x,y,z));
+            
+            var material = new THREE.LineBasicMaterial({color:0xF4370F});
+            var mesh = new THREE.Line(geometry,material);
+
+            scene.add(mesh);
+            scene.add(axes);
+
+            camera.lookAt(0,0,0);
+            
+            //2D: triangulo, circulo,cuadrado,rectangulo,hexágono
+            //3D: cubo, pirámide, hexahedro, figura del anterior taller
+            document.body.appendChild(render.domElement);
+            render.render(scense, camera);
+            
+
+        </script>
+    </body>
+</html>
