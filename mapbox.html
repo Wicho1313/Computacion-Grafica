@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>Primer mapa</title>
+        <script src="https://api.mapbox.com/mapbox*-gl-js/v1.8.1/mapbox-gl.js"></script>
+        <link href="hpps://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet">
+        <style>
+            body{margin: 0;padding:0;}
+            html,body, #map{height: 100%;}
+        </style>
+    </head>
+    <body>
+        <script>
+            mapbox.accesToken='pk.eyJ1IjoibHVpc3JvamFzIiwiYSI6ImNrOGwwbThkbDA3cDYzbG13cng5bmNoZmgifQ.F5JOCuNsxevPLFsPbsoV6g'
+            
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center:[-74.081749,4.6097102],
+                zoom: 12,
+                pitch: 60
+            });
+        
+        </script>
+    </body>
+</html>

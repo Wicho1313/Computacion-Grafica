@@ -1,0 +1,5 @@
+https://www.kaggle.com/samsitta/mexicostatescoordinates
+https://www.kaggle.com/lalish99/covid19-mx?select=casos_confirmados.csv
+https://www.kaggle.com/carloslira/covid19-mexico
+https://drive.google.com/drive/u/0/folders/0B2uk4BKdSI3iXzJfWDNoY1k3bHM
+https://www.analyticslane.com/2018/09/10/unir-y-combinar-dataframes-con-pandas-en-python/

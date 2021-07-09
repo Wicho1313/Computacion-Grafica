@@ -1,0 +1,4 @@
+# si está marcado con un '#' es un comentario
+
+# ignoramos la carpeta que contiene la librería threejs
+./threeJS/
