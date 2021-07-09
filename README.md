@@ -1,6 +1,6 @@
 ## Computer Graphics
 
-https://wicho1313.github.io/Computacion-Grafica/proyecto.html
+[Proyecto covid](https://wicho1313.github.io/Computacion-Grafica/proyecto.html)
 
 ### Markdown
 
