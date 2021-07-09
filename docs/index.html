@@ -1,17 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repositorio de Computer Graphics</title>
-</head>
-<body>
-    <h1>Repositorio de Computer Graphics</h1>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <base href="proyectoData/">
+        <title>Proyecto</title>
+        <!--librerías de mapbox-->
+        <script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
+        <link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+        <!--librerías de bootstrap-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>     
+        <!--Capas del mapa-->
+        <script src="mapaProyecto.js"></script>
+        <!--base de datos población-->
+        <script src="poblacion.js"></script>
+        <!--base de datos de casos por municipio-->
+        <script src="mex_mun_conf.js"></script>
+        <script src="mex_mun_neg.js"></script>
+        <script src="mex_mun_def.js"></script>
+        <script src="mex_mun_sos.js"></script>
+        <!--base de datos nacional por estado-->
+        <script src="mex_nac_conf.js"></script>
+        <script src="mex_nac_defun.js"></script>
+        <script src="mex_nac_neg.js"></script>
+        <script src="mex_nac_sos.js"></script>
+        <!--contiene el menú y sus funciones-->
+        <script src="menu.js"></script>
+        
+        <style>
+            body{margin: 0; padding:0;}
 
-    <p>
-        Proyecto de representación de datos del COVID 19 al mes de Junio 2020 en México
-        Puedes verlo <a href="../grafica/proyecto.html">aqui</a>
-    </p>
-</body>
+            html, body, #map{height: 100%;}
+
+            .mapboxgl-popup {
+                    max-width: 400px;
+                    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+                    }
+
+            .navbar {margin-bottom: auto;
+                    border-color: aqua;}
+
+            #poli, #cl, #cal {margin-top: 10px;
+                        margin-right: 5px;}
+
+            .dropdown-submenu {position: relative;}
+
+            .dropdown-submenu .dropdown-menu {top: 0;left: 100%;margin-top: -1px;}
+
+            .legend {
+                    background-color: #fff;
+                    border-radius: 3px;
+                    bottom: 30px;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+                    padding: 10px;
+                    position: absolute;
+                    right: 10px;
+                    z-index: 1;
+                    }
+                    
+            #titulo, #titulo2 {
+            margin: 0 0 10px;
+            }
+            
+            .legend div span {
+            border-radius: 50%;
+            display: inline-block;
+            height: 10px;
+            margin-right: 5px;
+            width: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                <a class="navbar-brand">Covid-19 en México</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <!--<li><a onclick="polygonVisible ()" role="button" id="polygons">Polígonos</a></li>-->
+                <li id="poli"><button onclick="polygonVisible()" type="button" class="btn btn-primary">Polígonos</button></li>
+                <!--<li id="cl"><button onclick="cloroplethVisible()" type="button" class="btn btn-primary ">Cloroplético</button></li>-->
+                <li class="dropdown" id="cl">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Coroplético
+                        <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-submenu"><a class="test" tabindex="-1" href="#">Confirmados <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a onclick="choroplethVisible('Marzo', nac_conf)" tabindex="-1" >Marzo</a></li>
+                                        <li><a onclick="choroplethVisible('Abril', nac_conf)" tabindex="-1" >Abril</a></li>
+                                        <li><a onclick="choroplethVisible('Mayo', nac_conf)"  tabindex="-1" >Mayo</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu"><a class="test" tabindex="-1" href="#">Negativos <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a onclick="choroplethVisible('Marzo', nac_neg)" tabindex="-1" >Marzo</a></li>
+                                        <li><a onclick="choroplethVisible('Abril', nac_neg)" tabindex="-1" >Abril</a></li>
+                                        <li><a onclick="choroplethVisible('Mayo', nac_neg)"  tabindex="-1" >Mayo</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu"><a class="test" tabindex="-1" href="#">Sospechosos <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a onclick="choroplethVisible('Marzo', nac_sos)" tabindex="-1" >Marzo</a></li>
+                                        <li><a onclick="choroplethVisible('Abril', nac_sos)" tabindex="-1" >Abril</a></li>
+                                        <li><a onclick="choroplethVisible('Mayo', nac_sos)"  tabindex="-1" >Mayo</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu"><a class="test" tabindex="-1" href="#">Defunciones <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a onclick="choroplethVisible('Marzo', nac_defun)" tabindex="-1" >Marzo</a></li>
+                                        <li><a onclick="choroplethVisible('Abril', nac_defun)" tabindex="-1" >Abril</a></li>
+                                        <li><a onclick="choroplethVisible('Mayo', nac_defun)"  tabindex="-1" >Mayo</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                </li>
+                <li class="dropdown" id="cal">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Mapa de calor
+                        <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu"><a class="test" tabindex="-1" href="#">Confirmados <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a onclick="heatmapVisible('Marzo', mun_confirmed)" tabindex="-1" >Marzo</a></li>
+                                    <li><a onclick="heatmapVisible('Abril', mun_confirmed)" tabindex="-1" >Abril</a></li>
+                                    <li><a onclick="heatmapVisible('Mayo', mun_confirmed)"  tabindex="-1" >Mayo</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu"><a class="test"  tabindex="-1" >Negativos <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a onclick="heatmapVisible('Marzo', mun_neg)" tabindex="-1" >Marzo</a></li>
+                                    <li><a onclick="heatmapVisible('Abril', mun_neg)" tabindex="-1" >Abril</a></li>
+                                    <li><a onclick="heatmapVisible('Mayo', mun_neg)" tabindex="-1" >Mayo</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu"><a class="test" tabindex="-1" >Sospechosos <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a onclick="heatmapVisible('Marzo', mun_sos)" tabindex="-1" >Marzo</a></li>
+                                    <li><a onclick="heatmapVisible('Abril', mun_sos)" tabindex="-1" >Abril</a></li>
+                                    <li><a onclick="heatmapVisible('Mayo', mun_sos)" tabindex="-1" >Mayo</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu"><a class="test" tabindex="-1" >Muertos <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a onclick="heatmapVisible('Marzo', mun_def)" tabindex="-1" >Marzo</a></li>
+                                    <li><a onclick="heatmapVisible('Abril', mun_def)" tabindex="-1" >Abril</a></li>
+                                    <li><a onclick="heatmapVisible('Mayo', mun_def)" tabindex="-1" >Mayo</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id='map'> </div>
+        <div id="state-legend" class="legend" style="display: none">
+            <b id='titulo2'></b>
+            <b id="titulo"></b>
+            <div id="d4nivel"><span id="s4nivel"></span><b id="b4nivel"></b></div>
+            <div id="d3nivel"><span id="s3nivel"></span><b id="b3nivel"></b></div>
+            <div id="d2nivel"><span id="s2nivel"></span><b id="b2nivel"></b></div>
+            <div id="d1nivel"><span id="s1nivel"></span><b id="b1nivel"></b></div>
+            <div id="d0nivel"><span id="s0nivel"></span><b id="b0nivel"></b></div>
+        </div>
+    </body>
 </html>
