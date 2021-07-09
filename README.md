@@ -1,8 +1,6 @@
-## Welcome to GitHub Pages
+## Computer Graphics
 
-You can use the [editor on GitHub](https://github.com/Wicho1313/Computacion-Grafica/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+https://wicho1313.github.io/Computacion-Grafica/proyecto.html
 
 ### Markdown
 
